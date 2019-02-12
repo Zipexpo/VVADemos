@@ -62,7 +62,7 @@
 
         function calculateColor1(d, i, odd) {
             //Write your code here.
-            if (odd && i > 0 && (d.price > 50)) {
+            if (odd && i > 0 && (d.price > 100)) {
                 return "yellow";
             } else {
                 return "steelblue";
@@ -111,12 +111,10 @@
                 xAxisG.transition().duration(1000).call(xAxis);
                 yAxisG.transition().duration(1000).call(yAxis);
             }
-
         }
 
-        // setInterval(tick, 2000);
+        setInterval(tick, 2000);
         setInterval(changeColor, 1000);
-        let counter = 0;
 
         function changeColor() {
             let now = new Date();
