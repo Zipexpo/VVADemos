@@ -11,6 +11,7 @@
         .tooltip {
             position: absolute;
             opacity: 0;
+            pointer-events: none;
         }
     </style>
 </head>
@@ -49,17 +50,38 @@
         let linePath = graph.append("path").datum(data).attr("d", lineGen).attr("fill", "none").attr("stroke", "black");
         let circles = graph.selectAll("circle").data(data).enter().append("circle").call(createCircle);
 
+        function calculateColor(d, i) {
+            //Write your code here.
+            if (i > 0 && (d.price - data[i - 1].price > 50)) {
+                return "yellow";
+            } else {
+                return "steelblue";
+            }
+            // return (i>0 &&  d.price - data[i-1].price > 50) ? "yellow": "steelblue"
+        }
+
+        function calculateColor1(d, i, odd) {
+            //Write your code here.
+            if (odd && i > 0 && (d.price > 50)) {
+                return "yellow";
+            } else {
+                return "steelblue";
+            }
+            // return (i>0 &&  d.price - data[i-1].price > 50) ? "yellow": "steelblue"
+        }
+
         function createCircle(theCircle) {
             return theCircle.attr("cx", d => xScale(d.date))
-                .attr("cy", d => yScale(d.price)).attr("r", 4)
-                .attr("fill", "steelblue")
+                .attr("cy", d => yScale(d.price))
+                .attr("r", d => d.price > 100 ? 10 : 4)
+                .attr("fill", calculateColor)
                 .on("mouseover", d => {
-                    div.style('left', d3.event.pageX + "px").style("top", d3.event.pageY + "px");
+                    div.style('left', (d3.event.pageX + 5) + "px").style("top", (d3.event.pageY - 12) + "px");
                     div.transition().duration(1000).style("opacity", 1);
                     div.html(d.price.toFixed(2));
                     paused = true;
                 })
-                .on("mouseout", d=>{
+                .on("mouseout", d => {
                     div.transition().duration(1000).style("opacity", 0);
                     paused = false;
                 });
@@ -92,8 +114,17 @@
 
         }
 
-        setInterval(tick, 2000);
+        // setInterval(tick, 2000);
+        setInterval(changeColor, 1000);
+        let counter = 0;
 
+        function changeColor() {
+            let now = new Date();
+            let s = now.getSeconds();
+            circles.attr("fill", (d, i)=>{
+                return calculateColor1(d, i, s%2);
+            });
+        }
     });
 </script>
 </body>
